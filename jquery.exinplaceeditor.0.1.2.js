@@ -1,5 +1,5 @@
 /*
- * 	exInPlaceEditor 0.1.1 - jQuery plugin
+ * 	exInPlaceEditor 0.1.2 - jQuery plugin
  *	written by Cyokodog	
  *
  *	Copyright (c) 2010 Cyokodog (http://d.hatena.ne.jp/cyokodog/)
@@ -163,11 +163,14 @@
 			});
 		}
 		o.hideEditor();
+		c.oninit(o,o);
 	}
 	$.extend($.ex.inPlaceEditor.prototype, {
 		_focus : function( target ){
+			var o = this , c = o.config;
 			setTimeout(function(){
-				target.focus().select();
+				target.focus();
+				if (c.dataSelect) target.select();
 			},10);			
 		},
 		getTarget : function(){
@@ -202,17 +205,34 @@
 			var o = this , c = o.config , p = param || {};
 			c._prevValue = o.getValue();
 			c.labels.hide();
-			c.editors.show();
-			!p.callback || p.callback.apply( o , [o] );
-			!p.focus || o._focus( c.editor );
+			var callback = function(){
+				!p.callback || p.callback.apply( o , [o] );
+				!p.focus || o._focus( c.editor );
+			}
+			if (c.effect && c.displayStyle == 'block') {
+				c.editors.show(c.effect , callback);
+			}
+			else{
+				c.editors.show();
+				callback();				
+			}
 			return o;
 		},
 		hideEditor : function( param ){
 			var o = this , c = o.config , p = param || {};
 			c.editors.hide();
-			c.labels.show();
-			!p.callback || p.callback.apply( o , [o] );
-			!p.focus || o._focus( c.label );
+
+			var callback = function(){
+				!p.callback || p.callback.apply( o , [o] );
+				!p.focus || o._focus( c.label );
+			}
+			if (c.effect && c.displayStyle == 'block') {
+				c.labels.show(c.effect , callback);
+			}
+			else{
+				c.labels.show();
+				callback();				
+			}
 			return o;
 		},
 		cancel : function( param ){
@@ -225,7 +245,7 @@
 		},
 		save : function( param ){
 			var o = this , c = o.config , p = param || {};
-			if(/undefined|true/.test(c.onsave.apply(o,[o]))){
+			if(/undefined|true/.test(c.onsave.call(o,o))){
 				o.commit( p );
 			}
 			return o;
@@ -370,6 +390,9 @@
 		savingMessage : 'Saving...',
 		hoverSpot : true,
 		nowHover : false,
+		dataSelect : false,
+		effect : 'fast',	//or slow or 'other easing name' or false
+		oninit : function(){},
 		onsave : function(){}
 	}
 	$.fn.exInPlaceEditor = function(option){
