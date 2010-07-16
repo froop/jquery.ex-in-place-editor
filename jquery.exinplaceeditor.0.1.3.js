@@ -1,5 +1,5 @@
 /*
- * 	exInPlaceEditor 0.1.2 - jQuery plugin
+ * 	exInPlaceEditor 0.1.3 - jQuery plugin
  *	written by Cyokodog	
  *
  *	Copyright (c) 2010 Cyokodog (http://d.hatena.ne.jp/cyokodog/)
@@ -197,8 +197,20 @@
 		},
 		getText : function(){
 			var o = this , c = o.config;
-			var method = c.htmlEditor ? 'html' : 'text';
-			var text = c.label[ method ]();
+			var text = prev = c.label.html();
+			if (!c.htmlEditor) {
+				if (c.convertCR == 'br'){
+					text = text.replace(/\<BR>/ig,'%%CR%%');
+				}
+				else {
+					text = text.replace(/\<P>/ig,'').replace(/\<\/P>/ig,'%%CR%%');
+				}
+				if (text != prev) {
+					var temp = $('<div/>').appendTo('body').html(text.replace(/(\n|\r)/g,''));
+					text = temp.text().replace(/%%CR%%/g,'\n');
+					temp.remove();
+				}
+			}
 			return text == c.nulltext ? '' : text;
 		},
 		showEditor : function( param ){
