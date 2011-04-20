@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<title>exInPlace Editor のデモページ</title>
+		<link rel="stylesheet" type="text/css" href="./demo.css"/>
+		<style>
+			div.footer{
+				padding-bottom:1000px;
+			}
+			input{
+				width:50%;
+			}
+			textarea{
+				width:98%;
+				height:6em;
+				overflow-y:auto;
+			}
+			button.apply{
+				margin:0 16px;
+				width:5em;
+			}
+			div.ex{
+				margin-bottom:10em;
+			}
+			table{
+				table-layout:fixed;
+				width:90%;
+			}
+			table.ex{
+				margin:1em 16px;
+				background-color:#e0e0e0;
+				border:solid 2px #f4f4f4;
+			}
+			table.ex tr{
+				background-color:#fafafa;
+			}
+			table.ex th{
+				width:10em;
+				background-color:#e8e8e8;
+				color:#888;
+				text-align:left;
+			}
+			table.ex th,
+			table.ex td{
+				vertical-align:top;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="./exinplaceeditor.css"/>
+		<script type="text/javascript" src="./jquery-1.5.min.js"></script>
+		<script type="text/javascript" src="./jquery.exinplaceeditor.0.1.4.js"></script>
+		<script>
+			jQuery(function($){
+				$('.ex10 button').click(function(){
+					$('textarea','.ex10').exInPlaceEditor({
+						convertCR : 'li'
+					});
+				});
+				$('.ex11 button').click(function(){
+					$('ul','.ex11').exInPlaceEditor();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="header">
+			<h1>exInPlace Editor のデモページ</h1>
+		</div>
+		<div class="body">
+			<h2 id="ex10">Ex.10</h2>
+			<div class="ex ex10">
+				<p>リスト要素（UL - LI）に置換する</p>
+				<table class="ex">
+					<tr>
+						<th>Core API</th>
+						<td>
+							<textarea>jQuery()
+jQuery.noConflict()
+jQuery.sub()
+jQuery.when()</textarea>
+						</td>
+					</tr>
+					<tr>
+						<th>Attributes API</th>
+						<td>
+<textarea>.addClass()
+.attr()
+.hasClass()
+.html()</textarea>
+							</ul>
+						</td>
+					</tr>
+				</table>
+				<div>
+					<button class="apply">実行</button>
+				</div>
+			</div>
+
+			<h2 id="ex11">Ex.11</h2>
+			<div class="ex ex11">
+				<p>リスト要素（UL - LI）を編集する</p>
+				<table class="ex">
+					<tr>
+						<th>Core API</th>
+						<td>
+							<ul>
+								<li>jQuery()</li>
+								<li>jQuery.noConflict()</li>
+								<li>jQuery.sub()</li>
+								<li>jQuery.when()</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<th>Attributes API</th>
+						<td>
+							<ul>
+								<li>.addClass()</li>
+								<li>.attr()</li>
+								<li>.hasClass()</li>
+								<li>.html()</li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+				<div>
+					<button class="apply">実行</button>
+				</div>
+			</div>
+
+		</div>
+		<div class="footer">
+			<a class="article" href="http://d.hatena.ne.jp/cyokodog/">Cyokodog::Diary</a>
+		</div>
+	</body>
+</html>

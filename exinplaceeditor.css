@@ -1,3 +1,6 @@
+.ex-ipe-block{
+	zoom:1;
+}
 .ex-ipe-block,
 .ex-ipe-block .ex-ipe-editor,
 .ex-ipe-block .ex-ipe-label,
@@ -30,7 +33,7 @@ a:hover.ex-ipe-label{
 
 a.ex-ipe-btn{
  	margin:0 1px 0 0;
-	padding:2px 4px;
+	padding:0 4px;
 	overflow:hidden;
 	/zoom:1;
 	line-height:1.2;
