@@ -1,5 +1,5 @@
 /*
- * 	exInPlaceEditor 0.1.4.1 - jQuery plugin
+ * 	exInPlaceEditor 0.1.5 - jQuery plugin
  *	written by Cyokodog	
  *
  *	Copyright (c) 2011 Cyokodog (http://d.hatena.ne.jp/cyokodog/)
@@ -72,7 +72,7 @@
 				c.label.attr('href','javascript:void(0)');
 			}
 			c.editor.before(c.label);
-			c.label.html( o._INPUTtoHTML(c.editor.val()) );
+			c.label.html( o.getReplaceValue(o._INPUTtoHTML(c.editor.val())) );
 		}
 		else{
 			if (c.tag == 'UL') {
@@ -86,7 +86,7 @@
 			c.editor = $('<' + c.editorType + '/>');
 			c.label.after( c.editor );
 			c.editor.val( o._HTMLtoINPUT(c.label.html()) );
-			c.label.html( o._INPUTtoHTML(c.editor.val()) );
+			c.label.html( o.getReplaceValue(o._INPUTtoHTML(c.editor.val())) );
 			if (c.displayStyle == 'auto' && !c.isTextarea ) {
 				c.displayStyle = c.target.css('display');
 			}
@@ -107,10 +107,10 @@
 		if( c.saveLabel || c.cancelLabel ){
 			c.saveTool = $('<span class="ex-ipe-save-tool"/>');
 			if( c.saveLabel ){
-				c.saveTool.append( c.saveButton = $('<a class="ex-ipe-save ex-ipe-btn" href="#">' + c.saveLabel + '</a>') );
+				c.saveTool.append( c.saveButton = $('<a class="ex-ipe-save ex-ipe-btn" href="javascript:void(0)">' + c.saveLabel + '</a>') );
 			}
 			if( c.cancelLabel ){
-				c.saveTool.append( c.cancelButton = $('<a class="ex-ipe-cancel ex-ipe-btn" href="#">' + c.cancelLabel + '</a>') );
+				c.saveTool.append( c.cancelButton = $('<a class="ex-ipe-cancel ex-ipe-btn" href="javascript:void(0)">' + c.cancelLabel + '</a>') );
 			}
 			c.editors.append( c.saveTool );
 		}
@@ -120,7 +120,7 @@
 
 		if( c.editLabel ){
 			c.editTool = $('<span class="ex-ipe-edit-tool" style="text-align:' + c.editLabelAlign + '"/>');
-			c.editTool.append( c.editButton = $('<a class="ex-ipe-edit" href="#">' + c.editLabel + '</a>') );
+			c.editTool.append( c.editButton = $('<a class="ex-ipe-edit" href="javascript:void(0)">' + c.editLabel + '</a>') );
 			c.labels.append( c.editTool );
 		}
 		c.msgbox = $('<div class="ex-ipe-msgbox"/>').appendTo('body');
@@ -187,7 +187,8 @@
 			});
 		}
 		o.hideEditor();
-		c.oninit(o,o);
+
+		c.oninit ? c.oninit(o,o) : c.onInit(o,o);
 	}
 	$.extend($.ex.inPlaceEditor.prototype, {
 		_focus : function( target ){
@@ -221,7 +222,7 @@
 				else
 				if( c.convertCR == 'li'){
 					if (c.directEdit && c.directEditLiLink) {
-						input = '<li><a href="#">' + input.replace(/\n/g,'</a></li><li><a href="#">') + '</a></li>';
+						input = '<li><a href="javascript:void(0)">' + input.replace(/\n/g,'</a></li><li><a href="javascript:void(0)">') + '</a></li>';
 					}
 					else {
 						input = '<li>' + input.replace(/\n/g,'</li><li>') + '</li>';
@@ -295,11 +296,27 @@
 			var o = this , c = o.config;
 			return o._INPUTtoHTML(o.getValue(),true);
 		},
+		getReplaceValue : function(val){
+			var o = this , c = o.config;
+			if (c.replaceLabel) {
+				if (typeof c.replaceLabel == 'function') {
+					var rep = c.replaceLabel.call(o,o);
+					if (rep != undefined){
+						val = rep;
+					}
+				}
+				else {
+					val = c.replaceLabel;
+				}
+			}
+			return val;
+		},
 		showEditor : function( param ){
 			var o = this , c = o.config , p = param || {};
 			c._prevValue = o.getValue();
 			c.labels.hide();
 			var callback = function(){
+				c.onShowEditor.apply( o , [o] );
 				!p.callback || p.callback.apply( o , [o] );
 				!p.focus || o._focus( c.editor );
 			}
@@ -339,7 +356,7 @@
 		},
 		save : function( param ){
 			var o = this , c = o.config , p = param || {};
-			if(/undefined|true/.test(c.onsave.call(o,o))){
+			if(/undefined|true/.test(c.onsave ? c.onsave.call(o,o) : c.onSave.call(o,o))){
 				o.commit( p );
 			}
 			return o;
@@ -347,7 +364,7 @@
 		commit : function( param ){
 			var o = this , c = o.config , p = param || {};
 			c.editor.val( o.getValue() );
-			c.label.html( o._INPUTtoHTML() );
+			c.label.html( o.getReplaceValue(o._INPUTtoHTML()) );
 			o.hideEditor( p );
 			return o;
 		},
@@ -390,7 +407,7 @@
 			
 			var closeTimer;
 			if( p.closeButton ){
-				$('<a href="#" class="ex-ipe-err-close">' + p.closeButton + '</a>').appendTo(c.msgbox).click(function(){
+				$('<a href="javascript:void(0)" class="ex-ipe-err-close">' + p.closeButton + '</a>').appendTo(c.msgbox).click(function(){
 					if(closeTimer){
 						clearTimeout(closeTimer);
 					}
@@ -476,8 +493,10 @@
 		nowHover : false,
 		dataSelect : false,
 		effect : 'fast',	//or slow or 'other easing name' or false
-		oninit : function(){},
-		onsave : function(){}
+		replaceLabel : false,
+		onInit : function(){},
+		onSave : function(){},
+		onShowEditor : function(){}
 	}
 	$.fn.exInPlaceEditor = function(option){
 		var targets = this,api = [];

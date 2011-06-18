@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
-		<title>exInPlace Editor のデモページ</title>
+		<title>Ex InPlace Editor のデモページ</title>
 		<link rel="stylesheet" type="text/css" href="./demo.css"/>
 		<style>
 			div.footer{
@@ -46,26 +46,61 @@
 			table.ex td{
 				vertical-align:top;
 			}
+			.module-set{
+				margin:1em 16px;
+			}
 		</style>
 		<link rel="stylesheet" type="text/css" href="./exinplaceeditor.css"/>
 		<script type="text/javascript" src="./jquery-1.5.min.js"></script>
-		<script type="text/javascript" src="./jquery.exinplaceeditor.0.1.4.1.js"></script>
+		<script type="text/javascript" src="./jquery.exinplaceeditor.0.1.5.js"></script>
 		<script>
 			jQuery(function($){
 				$('.ex10 button').click(function(){
 					$('textarea','.ex10').exInPlaceEditor({
 						convertCR : 'li'
 					});
+					$(this).attr('disabled',true);
 				});
 				$('.ex11 button').click(function(){
 					$('ul','.ex11').exInPlaceEditor();
+					$(this).attr('disabled',true);
 				});
+
+				var commify = function(text){
+					var reverseText = function(str){
+						return str.split('').reverse().join('');
+					}
+					return reverseText(reverseText(text).replace(/(\d{3})(?=\d)(?!\d*\.)/g,'$1,'))
+				}
+				var replaecLabelDemo = {
+					onSave : function( api ){
+						var val = api.getValue();
+						if (val.length && isNaN(val)) {
+							api.saveError('数字を入力してください');
+							return false;
+						}
+					},
+					replaceLabel : function(api){
+						var ret = commify(api.getValue());
+						return ret ? '￥' + ret : '金額を入力してください';
+					}
+				}
+
+				$('.ex12 button').click(function(){
+					$('input','.ex12').exInPlaceEditor(replaecLabelDemo);
+					$(this).attr('disabled',true);
+				});
+				$('.ex13 button').click(function(){
+					$('a','.ex13').exInPlaceEditor(replaecLabelDemo);
+					$(this).attr('disabled',true);
+				});
+
 			});
 		</script>
 	</head>
 	<body>
 		<div class="header">
-			<h1>exInPlace Editor のデモページ</h1>
+			<h1>Ex InPlace Editor のデモページ</h1>
 		</div>
 		<div class="body">
 			<h2 id="ex10">Ex.10</h2>
@@ -124,6 +159,25 @@ jQuery.when()</textarea>
 						</td>
 					</tr>
 				</table>
+				<div>
+					<button class="apply">実行</button>
+				</div>
+			</div>
+
+			<h2 id="ex12">Ex.12</h2>
+			<div class="ex ex12">
+				<p>表示テキストを整形する</p>
+				<div class="module-set"><label>Price:</label> <input value="1234567"/></div>
+				<div>
+					<button class="apply">実行</button>
+				</div>
+			</div>
+
+
+			<h2 id="ex13">Ex.13</h2>
+			<div class="ex ex13">
+				<p>表示テキストを整形する</p>
+				<div class="module-set"><label>Price:</label> <a href="javascript:void(0)">1234567</a></div>
 				<div>
 					<button class="apply">実行</button>
 				</div>
