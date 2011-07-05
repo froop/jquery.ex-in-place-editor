@@ -268,7 +268,11 @@
 				}
 				else
 				if( c.convertCR == 'li'){
-					html = html.replace(/<LI>|\s<LI>/ig,'').replace(/\<\/LI>\s|\<\/LI>/ig,'%%%CR%%%').replace(/%%%CR%%%$/ig,'');
+					var temp = html;
+					html = '';
+					$('<ul>' + temp + '</ul>').find('> li').each(function(){
+						html += ($(this).text() + '%%%CR%%%');
+					});
 				}
 				var dummy = $('<div/>').html(html);
 				html = dummy.text().replace(/%%%CR%%%/ig,'\n');
