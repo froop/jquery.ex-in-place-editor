@@ -1,5 +1,5 @@
 /*
- * 	exInPlaceEditor 0.1.5.1 - jQuery plugin
+ * 	exInPlaceEditor 0.1.5.1.f1 - jQuery plugin
  *	written by Cyokodog	
  *
  *	Copyright (c) 2011 Cyokodog (http://d.hatena.ne.jp/cyokodog/)
@@ -54,7 +54,7 @@
 			c.editLabel = false;
 		}
 
-		c.tag = c.target.attr('tagName');
+		c.tag = c.target.get(0).tagName;
 		if (/INPUT|TEXTAREA/.test( c.tag )) {
 			c.isTextarea = ( c.tag == 'TEXTAREA' );
 			c.editor = c.target;
