@@ -1,5 +1,5 @@
 /*
- * 	exInPlaceEditor 0.1.5.1.f1 - jQuery plugin
+ * 	exInPlaceEditor 0.1.5.1.f2 - jQuery plugin
  *	written by Cyokodog	
  *
  *	Copyright (c) 2011 Cyokodog (http://d.hatena.ne.jp/cyokodog/)
@@ -144,6 +144,9 @@
 			}
 		}
 		c.editor.bind('keydown.ex-ipe',function(evt){
+			if (evt.keyCode === 0){ // for Firefox
+				return;
+			}
 			if(evt.keyCode == c.escKey){
 				o.cancel({
 					focus : true
